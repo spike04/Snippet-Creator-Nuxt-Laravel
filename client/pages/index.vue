@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Nuxt Snippet Creator</h2>
+    <h2>Home</h2>
   </div>
 </template>
 
