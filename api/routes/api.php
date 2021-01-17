@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\MeController;
 use App\Http\Controllers\Auth\SignInController;
+use App\Http\Controllers\SignOutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,5 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'auth'], function () {
     Route::post('signin', SignInController::class);
     Route::get('me', MeController::class);
+    Route::post('signout', SignOutController::class);
 });
