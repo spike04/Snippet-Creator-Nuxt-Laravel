@@ -87,6 +87,11 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: 'Sign In'
+    }
+  },
   data() {
     return {
       form: {
