@@ -9,7 +9,13 @@
         @submit.prevent="submit"
       >
         <div class="mb-5">
-          <label for="email" class="block mb-2 font-medium text-gray-600">
+          <label
+            for="email"
+            class="block mb-2 font-medium text-gray-600"
+            :class="{
+              'text-red-500': validation.email
+            }"
+          >
             Email address
           </label>
           <input
@@ -17,24 +23,46 @@
             name="email"
             id="email"
             class="block w-full p-3 border-2 border-gray-400 rounded"
+            :class="{
+              'border-red-500': validation.email
+            }"
             v-model="form.email"
           />
-          <!-- <div class="mt-1 mb-4 text-sm text-red-500">
-            Message
-          </div> -->
+          <div
+            class="mt-1 mb-4 text-sm font-medium text-red-500"
+            v-if="validation.email"
+          >
+            {{ validation.email[0] }}
+          </div>
         </div>
 
         <div class="mb-5">
-          <label for="password" class="block mb-2 font-medium text-gray-600">
+          <label
+            for="password"
+            class="block mb-2 font-medium text-gray-600"
+            :class="{
+              'text-red-500': validation.password
+            }"
+          >
             Password
           </label>
           <input
             type="password"
             name="password"
             id="password"
+            autocomplete="false"
             class="block w-full p-3 border-2 border-gray-400 rounded"
+            :class="{
+              'border-red-500': validation.password
+            }"
             v-model="form.password"
           />
+          <div
+            class="mt-1 mb-4 text-sm font-medium text-red-500"
+            v-if="validation.password"
+          >
+            {{ validation.password[0] }}
+          </div>
         </div>
 
         <div>
@@ -64,14 +92,21 @@ export default {
       form: {
         email: '',
         password: ''
-      }
+      },
+      validation: {}
     }
   },
   methods: {
     async submit() {
-      await this.$auth.loginWith('local', {
-        data: this.form
-      })
+      try {
+        await this.$auth.loginWith('local', {
+          data: this.form
+        })
+      } catch (err) {
+        if (err.response.status === 422) {
+          this.validation = err.response.data.errors
+        }
+      }
     }
   }
 }
