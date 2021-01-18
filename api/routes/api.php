@@ -31,4 +31,5 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['prefix' => 'snippets'], function () {
     Route::post('', [SnippetController::class, 'store']);
+    Route::get('{snippet}', [SnippetController::class, 'show']);
 });

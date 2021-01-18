@@ -10,11 +10,29 @@ class Snippet extends Model
 {
     use HasFactory;
 
+    /**
+     * Undocumented variable
+     *
+     * @var array
+     */
     protected $fillable = [
         'uuid',
         'title'
     ];
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Undocumented function
+     */
     public static function boot()
     {
         parent::boot();
@@ -30,8 +48,23 @@ class Snippet extends Model
         });
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public function steps()
     {
         return $this->hasMany(Step::class)->orderBy('order', 'asc');
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

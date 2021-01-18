@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Snippets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Snippet;
+use App\Transformers\Snippets\SnippetTransformer;
 use Illuminate\Http\Request;
 
 class SnippetController extends Controller
@@ -12,7 +14,27 @@ class SnippetController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth:api']);
+        $this->middleware(['auth:api'])->only('store');
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param Snippet $snippet
+     * @return void
+     */
+    public function show(Snippet  $snippet)
+    {
+        // authorize!
+        return fractal()
+            ->item($snippet)
+            ->transformWith(new SnippetTransformer())
+            ->parseIncludes([
+                'steps',
+                'author',
+                'user'
+            ])
+            ->toArray();
     }
 
     /**
