@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\MeController;
 use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\SignOutController;
+use App\Http\Controllers\Snippets\SnippetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +27,8 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('signin', SignInController::class);
     Route::get('me', MeController::class);
     Route::post('signout', SignOutController::class);
+});
+
+Route::group(['prefix' => 'snippets'], function () {
+    Route::post('', [SnippetController::class, 'store']);
 });
