@@ -17,6 +17,21 @@ class Step extends Model
         'uuid'
     ];
 
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
     public static function boot()
     {
         parent::boot();
