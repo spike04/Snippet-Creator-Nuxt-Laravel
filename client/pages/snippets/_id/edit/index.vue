@@ -28,6 +28,7 @@
           class="w-full p-2 py-1 text-xl font-medium text-gray-600 bg-transparent border-2 border-gray-400 border-dashed rounded"
           placeholder="Untitled Step"
           value=""
+          v-model="currentStep.title"
         />
       </div>
 
@@ -72,6 +73,7 @@
           <div class="w-full lg:mr-2">
             <textarea
               class="w-full mb-6 border-2 border-gray-400 border-dashed rounded-lg"
+              v-model="currentStep.body"
             ></textarea>
 
             <div class="w-full p-8 text-gray-600 bg-white rounded-lg">
@@ -136,9 +138,16 @@
             <h1 class="mb-6 text-xl font-medium text-gray-600">Steps</h1>
 
             <ul>
-              <li v-for="(step, index) in 5" :key="index" class="mb-1">
-                <nuxt-link :to="{}" :class="{ 'font-bold': index == 0 }">
-                  {{ index + 1 }}. Step Title
+              <li
+                v-for="(step, index) in orderedStepsAsc"
+                :key="index"
+                class="mb-1"
+              >
+                <nuxt-link
+                  :to="{}"
+                  :class="{ 'font-bold': currentStep.uuid === step.uuid }"
+                >
+                  {{ index + 1 }}. {{ step.title }}
                 </nuxt-link>
               </li>
             </ul>
@@ -171,11 +180,26 @@
 </template>
 
 <script>
+import { orderBy as _orderBy } from 'lodash'
 export default {
   data() {
     return {
       snippet: null,
       steps: []
+    }
+  },
+  computed: {
+    orderedStepsAsc() {
+      return _orderBy(this.steps, 'order', 'asc')
+    },
+    firstStep() {
+      return this.orderedStepsAsc[0]
+    },
+    currentStep() {
+      return (
+        this.orderedStepsAsc.find(s => s.uuid === this.$route.query.step) ||
+        this.firstStep
+      )
     }
   },
   async asyncData({ app, params }) {
