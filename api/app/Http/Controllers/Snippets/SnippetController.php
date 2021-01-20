@@ -52,4 +52,21 @@ class SnippetController extends Controller
             ->transformWith(new SnippetTransformer())
             ->toArray();
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function update(Snippet $snippet, Request $request)
+    {
+        // authorize!
+
+        $this->validate($request, [
+            'title' => 'nullable',
+        ]);
+
+        $snippet->update($request->only('title'));
+    }
 }

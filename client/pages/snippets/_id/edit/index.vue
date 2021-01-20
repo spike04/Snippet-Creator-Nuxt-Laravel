@@ -180,12 +180,20 @@
 </template>
 
 <script>
-import { orderBy as _orderBy } from 'lodash'
+import { orderBy as _orderBy, debounce as _debounce } from 'lodash'
+
 export default {
   data() {
     return {
       snippet: null,
       steps: []
+    }
+  },
+  watch: {
+    'snippet.title': {
+      handler: _debounce(async function(title) {
+        await this.$axios.$patch(`snippets/${this.snippet.uuid}`, { title })
+      }, 500)
     }
   },
   computed: {
