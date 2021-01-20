@@ -14,8 +14,7 @@
 export default {
   methods: {
     async createSnippet() {
-      const res = await this.$axios.post('snippets')
-      const snippet = res.data
+      const snippet = await this.$axios.$post('snippets')
 
       this.$router.push({
         name: 'snippets-id-edit',
