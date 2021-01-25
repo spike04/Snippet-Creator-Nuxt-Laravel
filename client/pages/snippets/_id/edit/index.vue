@@ -137,20 +137,7 @@
           <div class="mb-8">
             <h1 class="mb-6 text-xl font-medium text-gray-600">Steps</h1>
 
-            <ul>
-              <li
-                v-for="(step, index) in orderedStepsAsc"
-                :key="index"
-                class="mb-1"
-              >
-                <nuxt-link
-                  :to="{}"
-                  :class="{ 'font-bold': currentStep.uuid === step.uuid }"
-                >
-                  {{ index + 1 }}. {{ step.title || 'Unitiled step' }}
-                </nuxt-link>
-              </li>
-            </ul>
+            <StepList :steps="orderedStepsAsc" :currentStep="currentStep" />
           </div>
           <div class="text-sm text-gray-500">
             Use
@@ -181,8 +168,10 @@
 
 <script>
 import { orderBy as _orderBy, debounce as _debounce } from 'lodash'
+import StepList from '../../../../components/StepList.vue'
 
 export default {
+  components: { StepList },
   data() {
     return {
       snippet: null,
