@@ -36,7 +36,7 @@
         <div
           class="flex flex-wrap items-start justify-between w-full mb-8 lg:w-8/12 lg:mr-16 lg:flex-nowrap"
         >
-          <div class="flex flex-row order-first lg:flex-col">
+          <div class="flex flex-row order-first mr-2 lg:flex-col">
             <StepNavigationButton :step="previousStep">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@
 
             <nuxt-link
               :to="{}"
-              class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg"
+              class="block p-3 mb-2 bg-blue-500 rounded-lg"
               title="Add Step Before"
             >
               <svg
@@ -72,7 +72,7 @@
               v-model="currentStep.body"
             ></textarea>
 
-            <div class="w-full p-8 text-gray-600 bg-white rounded-lg">
+            <div class="p-8 text-gray-600 bg-white rounded-lg">
               Markdown Content
             </div>
           </div>
@@ -80,7 +80,7 @@
           <div
             class="flex flex-row-reverse order-first lg:order-last lg:flex-col"
           >
-            <StepNavigationButton :step="nextStep" class="ml-2">
+            <StepNavigationButton :step="nextStep">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -94,7 +94,7 @@
 
             <nuxt-link
               :to="{}"
-              class="block p-3 mb-2 ml-2 mr-2 bg-blue-500 rounded-lg"
+              class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg lg:mr-0"
               title="Add Step After"
             >
               <svg
@@ -110,7 +110,7 @@
 
             <nuxt-link
               :to="{}"
-              class="block p-3 mb-2 ml-2 mr-2 bg-blue-500 rounded-lg"
+              class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg lg:mr-0"
               title="Delete step"
             >
               <svg
@@ -159,8 +159,8 @@
 
 <script>
 import { orderBy as _orderBy, debounce as _debounce } from 'lodash'
-import StepList from './components/StepList'
-import StepNavigationButton from './components/StepNavigationButton'
+import StepList from '../components/StepList'
+import StepNavigationButton from '../components/StepNavigationButton'
 
 export default {
   components: { StepList, StepNavigationButton },

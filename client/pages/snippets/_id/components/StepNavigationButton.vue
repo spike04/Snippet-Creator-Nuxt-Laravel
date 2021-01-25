@@ -9,7 +9,7 @@
           }
         : {}
     "
-    class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg"
+    class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg lg:mr-0"
     :class="{
       'opacity-25 pointer-events-none': !step
     }"
@@ -22,8 +22,7 @@
 export default {
   props: {
     step: {
-      required: true,
-      type: Object
+      required: true
     }
   }
 }

@@ -4,28 +4,28 @@
       <div class="container py-10 pb-16">
         <div class="w-10/12">
           <h1 class="mb-4 text-4xl font-medium leading-tight text-gray-700">
-            Snippet title
+            {{ snippet.title }}
           </h1>
 
           <div class="text-gray-600">
-            Created by <nuxt-link :to="{}">Rubin Bajracharya</nuxt-link>
+            Created by
+            <nuxt-link :to="{}">{{ snippet.author.data.name }}</nuxt-link>
           </div>
         </div>
       </div>
     </div>
 
     <div class="container">
-      <h1 class="mb-6 text-xl font-medium text-gray-600">1/1. Step Title</h1>
+      <h1 class="mb-6 text-xl font-medium text-gray-600">
+        1/5. {{ currentStep.title }}
+      </h1>
 
       <div class="flex flex-wrap lg:flex-nowrap">
         <div
           class="flex flex-wrap items-start justify-between w-full mb-8 lg:w-8/12 lg:mr-16 lg:flex-nowrap"
         >
-          <div class="order-first">
-            <nuxt-link
-              :to="{}"
-              class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg"
-            >
+          <div class="order-first mr-2">
+            <StepNavigationButton :step="previousStep">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -35,16 +35,13 @@
                   d="M5.41 11H21a1 1 0 0 1 0 2H5.41l5.3 5.3a1 1 0 0 1-1.42 1.4l-7-7a1 1 0 0 1 0-1.4l7-7a1 1 0 0 1 1.42 1.4L5.4 11z"
                 />
               </svg>
-            </nuxt-link>
+            </StepNavigationButton>
           </div>
-          <div class="w-full p-8 text-gray-600 bg-white rounded-lg">
-            Markdown Content
+          <div class="w-full p-8 text-gray-600 bg-white rounded-lg lg:mr-2">
+            {{ currentStep.body }}
           </div>
           <div class="flex flex-row order-first lg:order-last lg:flex-col">
-            <nuxt-link
-              :to="{}"
-              class="block p-3 mb-2 ml-2 bg-blue-500 rounded-lg"
-            >
+            <StepNavigationButton :step="nextStep">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -54,10 +51,18 @@
                   d="M18.59 13H3a1 1 0 0 1 0-2h15.59l-5.3-5.3a1 1 0 1 1 1.42-1.4l7 7a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.42-1.4l5.3-5.3z"
                 />
               </svg>
-            </nuxt-link>
+            </StepNavigationButton>
             <nuxt-link
-              :to="{}"
-              class="order-first block p-3 mb-2 ml-2 bg-blue-500 rounded-lg lg:order-last"
+              :to="{
+                name: 'snippets-id-edit',
+                params: {
+                  id: snippet.uuid
+                },
+                query: {
+                  step: currentStep.uuid
+                }
+              }"
+              class="order-first block p-3 mb-2 mr-2 bg-blue-500 rounded-lg lg:order-last lg:mr-0"
               title="Edit step"
             >
               <svg
@@ -76,13 +81,7 @@
           <div class="mb-8">
             <h1 class="mb-6 text-xl font-medium text-gray-600">Steps</h1>
 
-            <ul>
-              <li v-for="(step, index) in 5" :key="index" class="mb-1">
-                <nuxt-link :to="{}" :class="{ 'font-bold': index == 0 }">
-                  {{ index + 1 }}. Step Title
-                </nuxt-link>
-              </li>
-            </ul>
+            <StepList :steps="orderedStepsAsc" :currentStep="currentStep" />
           </div>
           <div class="text-sm text-gray-500">
             Use
@@ -112,7 +111,63 @@
 </template>
 
 <script>
-export default {}
+import { orderBy as _orderBy } from 'lodash'
+import StepList from './components/StepList'
+import StepNavigationButton from './components/StepNavigationButton'
+
+export default {
+  components: {
+    StepList,
+    StepNavigationButton
+  },
+  head() {
+    return {
+      title: `${this.snippet.title || 'Untitled snippet'}`
+    }
+  },
+  data() {
+    return {
+      snippet: null,
+      steps: []
+    }
+  },
+  computed: {
+    orderedStepsAsc() {
+      return _orderBy(this.steps, 'order', 'asc')
+    },
+    orderedStepsDesc() {
+      return _orderBy(this.steps, 'order', 'desc')
+    },
+    firstStep() {
+      return this.orderedStepsAsc[0]
+    },
+    nextStep() {
+      return (
+        this.orderedStepsAsc.find(s => s.order > this.currentStep.order) || null
+      )
+    },
+    previousStep() {
+      return (
+        this.orderedStepsDesc.find(s => s.order < this.currentStep.order) ||
+        null
+      )
+    },
+    currentStep() {
+      return (
+        this.orderedStepsAsc.find(s => s.uuid === this.$route.query.step) ||
+        this.firstStep
+      )
+    }
+  },
+  async asyncData({ app, params }) {
+    let snippet = await app.$axios.$get(`snippets/${params.id}`)
+
+    return {
+      snippet: snippet.data,
+      steps: snippet.data.steps.data
+    }
+  }
+}
 </script>
 
 <style></style>
