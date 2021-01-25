@@ -37,11 +37,7 @@
           class="flex flex-wrap items-start justify-between w-full mb-8 lg:w-8/12 lg:mr-16 lg:flex-nowrap"
         >
           <div class="flex flex-row order-first lg:flex-col">
-            <nuxt-link
-              :to="{}"
-              class="block p-3 mb-2 mr-2 bg-blue-500 rounded-lg"
-              title="Previous Step"
-            >
+            <StepNavigationButton :step="previousStep">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -51,7 +47,7 @@
                   d="M5.41 11H21a1 1 0 0 1 0 2H5.41l5.3 5.3a1 1 0 0 1-1.42 1.4l-7-7a1 1 0 0 1 0-1.4l7-7a1 1 0 0 1 1.42 1.4L5.4 11z"
                 />
               </svg>
-            </nuxt-link>
+            </StepNavigationButton>
 
             <nuxt-link
               :to="{}"
@@ -84,11 +80,7 @@
           <div
             class="flex flex-row-reverse order-first lg:order-last lg:flex-col"
           >
-            <nuxt-link
-              :to="{}"
-              class="block p-3 mb-2 ml-2 bg-blue-500 rounded-lg"
-              title="Next step"
-            >
+            <StepNavigationButton :step="nextStep" class="ml-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -98,11 +90,11 @@
                   d="M18.59 13H3a1 1 0 0 1 0-2h15.59l-5.3-5.3a1 1 0 1 1 1.42-1.4l7 7a1 1 0 0 1 0 1.4l-7 7a1 1 0 0 1-1.42-1.4l5.3-5.3z"
                 />
               </svg>
-            </nuxt-link>
+            </StepNavigationButton>
 
             <nuxt-link
               :to="{}"
-              class="block p-3 mb-2 ml-2 bg-blue-500 rounded-lg"
+              class="block p-3 mb-2 ml-2 mr-2 bg-blue-500 rounded-lg"
               title="Add Step After"
             >
               <svg
@@ -118,7 +110,7 @@
 
             <nuxt-link
               :to="{}"
-              class="block p-3 mb-2 ml-2 bg-blue-500 rounded-lg"
+              class="block p-3 mb-2 ml-2 mr-2 bg-blue-500 rounded-lg"
               title="Delete step"
             >
               <svg
@@ -136,7 +128,6 @@
         <div class="w-full lg:w-4/12">
           <div class="mb-8">
             <h1 class="mb-6 text-xl font-medium text-gray-600">Steps</h1>
-
             <StepList :steps="orderedStepsAsc" :currentStep="currentStep" />
           </div>
           <div class="text-sm text-gray-500">
@@ -168,10 +159,11 @@
 
 <script>
 import { orderBy as _orderBy, debounce as _debounce } from 'lodash'
-import StepList from '../../../../components/StepList.vue'
+import StepList from './components/StepList'
+import StepNavigationButton from './components/StepNavigationButton'
 
 export default {
-  components: { StepList },
+  components: { StepList, StepNavigationButton },
   data() {
     return {
       snippet: null,
@@ -203,8 +195,22 @@ export default {
     orderedStepsAsc() {
       return _orderBy(this.steps, 'order', 'asc')
     },
+    orderedStepsDesc() {
+      return _orderBy(this.steps, 'order', 'desc')
+    },
     firstStep() {
       return this.orderedStepsAsc[0]
+    },
+    nextStep() {
+      return (
+        this.orderedStepsAsc.find(s => s.order > this.currentStep.order) || null
+      )
+    },
+    previousStep() {
+      return (
+        this.orderedStepsDesc.find(s => s.order < this.currentStep.order) ||
+        null
+      )
     },
     currentStep() {
       return (
